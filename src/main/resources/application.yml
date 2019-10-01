@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/large_data_system
+    username: postgres
+    password: postgres
+
+  jmx:       
+    enabled: false
+    
+server:
+ servlet:
+  context-path: /large_data_system-saito

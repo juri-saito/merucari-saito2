@@ -1,0 +1,75 @@
+【categoryテーブル】
+
+drop table category;
+-- category
+create table category (
+  name_all character varying(255)
+  , id serial not null
+  , parent integer
+  , name character varying(255)
+  , constraint category_PKC primary key (id)
+) ;
+
+
+【コピー】
+COPY original FROM 'C:\environment\applications\PostgreSQL\import\train.tsv' ( DELIMITER E'\t', format csv, header true ); --大文字COPY→サーバー上のファイル参照　--小文字copy→ローカルのファイル参照
+
+【大カテゴリ】
+--insert into category (name)
+SELECT distinct name1 FROM 
+(
+  SELECT SPLIT_PART(category_name ,'/', 1) AS name1, * FROM original
+) AS tmp
+WHERE name1 <> ''; 
+
+
+【中カテゴリ】
+insert into category (parent, name)
+
+SELECT id,name2 FROM category --カテゴリテーブルと「大カテゴリと中カテゴリをぬきだしたもの」を結合→大カテゴリIDと中カテゴリ名をSELECT
+FULL OUTER JOIN 
+	(SELECT distinct name1,name2 FROM --大カテゴリと中カテゴリを抜き出す
+		(SELECT distinct SPLIT_PART(category_name ,'/', 1) AS name1, SPLIT_PART(category_name ,'/', 2) AS name2, * FROM original) AS tmp
+	WHERE name1<> '' AND name2<> '') AS names
+ON category.name = names.name1 ORDER BY id;
+
+
+
+【小カテゴリ】
+ --大カテゴリと中カテゴリと小カテゴリとカテゴリネームをぬきだしたもの
+SELECT distinct name1,name2,name3, concat(name1, '/', name2, '/', name3) AS name_all
+	FROM 
+		(SELECT distinct 	SPLIT_PART(category_name ,'/', 1) AS name1,
+		 					SPLIT_PART(category_name ,'/', 2) AS name2, 
+		 					SPLIT_PART(category_name ,'/', 3) AS name3, * FROM original) AS tmp
+		WHERE name1<> '' AND name2<> '' AND name3<> ''
+
+--中カテゴリの親IDと、その親IDが表す大カテゴリの名前が並んだカテゴリテーブル
+SELECT c2.id AS c2_child_id, c2.name AS c2_child_name, c1.id AS c1_parent_id, c1.name AS c1_parent_name
+FROM category AS c1 INNER JOIN category AS c2
+  ON c1.id = c2.parent
+  
+--小カテゴリをインサート
+--insert into category (name_all, parent, name)
+SELECT name_all, c2_child_id,name3 FROM 
+	--親IDが表す大カテゴリ名が付与されたカテゴリテーブル
+	(SELECT c2.id AS c2_child_id, c2.name AS c2_child_name, c1.id AS c1_parent_id, c1.name AS c1_parent_name
+	FROM category AS c1 INNER JOIN category AS c2 ON c1.id = c2.parent) AS category_names
+  
+LEFT OUTER JOIN 
+	--大カテゴリと中カテゴリと小カテゴリをぬきだしたもの
+	(SELECT distinct name1,name2,name3, concat(name1, '/', name2, '/', name3) AS name_all
+	FROM 
+		(SELECT distinct 	SPLIT_PART(category_name ,'/', 1) AS name1,
+		 					SPLIT_PART(category_name ,'/', 2) AS name2, 
+		 					SPLIT_PART(category_name ,'/', 3) AS name3, * FROM original) AS tmp
+		WHERE name1<> '' AND name2<> '' AND name3<> '') AS names
+
+ON category_names.c2_child_name = names.name2 AND category_names.c1_parent_name = names.name1 ORDER BY c2_child_id;
+
+
+【アイテムテーブル】
+insert into items (name, condition, category, brand, price, shipping, description)
+select o.name,o.condition_id,c.id,o.brand,o.price,o.shipping,o.description 
+from original o
+left join category c on c.name_all = o.category_name
