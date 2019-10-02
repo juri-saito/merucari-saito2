@@ -79,7 +79,7 @@ public class ItemRepository {
 	}
 	
 	/**
-	 * 選択されたカテゴリに応じた商品情報を30件検索
+	 * 検索条件に応じた商品情報を30件検索
 	 * @param startItemCount　どの商品から表示させるかというカウント値（１つのページの先頭の商品番号）
 	 * @return 30件分の商品リスト
 	 */
@@ -87,11 +87,13 @@ public class ItemRepository {
 		StringBuilder sql = new StringBuilder();
 		List<Item> itemList = new ArrayList<Item>();
 		
+		//商品検索フォームが未入力の場合に対応
 		String searchName = form.getSearchName();
 		if(searchName == null) {
 			searchName = "";
 		}
 		
+		//ブランド検索フォームが未入力の場合に対応
 		String searchBrand = form.getSearchBrand();
 		if(searchBrand == null) {
 			searchBrand = "";
@@ -107,27 +109,12 @@ public class ItemRepository {
 		sql.append("AND i.brand LIKE :searchBrand ");  
 		sql.append("ORDER BY i.id LIMIT 30 OFFSET :startItemCount;");
 		SqlParameterSource param = new MapSqlParameterSource().addValue("startItemCount", startItemCount).addValue("searchName",  "%" + searchName + "%").addValue("parentName", "%" + form.getParentCategory() + "%").addValue("childName", "%" + form.getChildCategory() + "%").addValue("grandChildName", "%" + form.getGrandChildCategory() + "%").addValue("searchBrand",  "%" + searchBrand + "%");			
-		System.out.println(searchName);
+		
 		itemList = template.query(sql.toString(), param, ITEM_ROW_MAPPER);
 		
 		return itemList;
 	}
 	
-//	/**
-//	 * 選択されたカテゴリに応じた商品情報を30件検索
-//	 * @param startItemCount　どの商品から表示させるかというカウント値（１つのページの先頭の商品番号）
-//	 * @return 30件分の商品リスト
-//	 */
-//	public List<Item> findByCategory(int startItemCount,  SearchItemForm form){
-//		StringBuilder sql = new StringBuilder();
-//		List<Item> itemList = new ArrayList<Item>();
-//		sql.append("SELECT i.id, i.name, i.condition, i.category, c.name_all, i.brand, i.price, i.shipping, i.description FROM items i LEFT OUTER JOIN category c ON i.category = c.id WHERE SPLIT_PART(name_all ,'/', 1) Like :parentName AND SPLIT_PART(name_all ,'/', 2) Like :childName AND SPLIT_PART(name_all ,'/', 3) Like :grandChildName ORDER BY i.id LIMIT 30 OFFSET :startItemCount;");
-//		SqlParameterSource param = new MapSqlParameterSource().addValue("startItemCount", startItemCount).addValue("parentName", "%" + form.getParentCategory() + "%").addValue("childName", "%" + form.getChildCategory() + "%").addValue("grandChildName", "%" + form.getGrandChildCategory() + "%");			
-//		
-//		itemList = template.query(sql.toString(), param, ITEM_ROW_MAPPER);
-//		
-//		return itemList;
-//	}
-//	
+
 	
 }
