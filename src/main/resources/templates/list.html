@@ -50,7 +50,7 @@
 
     <!-- 検索フォーム -->
     <div id="forms">
-      <form th:action="@{/search}" class="form-inline" role="form" method="post" th:object="${searchItemForm}">
+      <form th:action="@{/search}" class="form-inline" role="form" method="post" th:object="${session.searchItemForm}">
         <div class="form-group">
         　<!-- 商品名検索 -->
           <input type="input" class="form-control" id="name" placeholder="item name"/>
@@ -59,9 +59,9 @@
         <div class="form-group">
 		  <!-- 大カテゴリ --> 
 		  <!-- <span>aaa</span>  -->      
-          <select class="form-control" name="parentCategory" id="parent-pulldown" th:field="*{parentCategory}">
-          	<option value="" selected>-- parent-name --</option>
-            <option th:each="parent:${parentList}" th:value="${parent.name}" th:text="${parent.name}" >- parentCategory -</option>
+          <select class="form-control" name="parentCategory" id="parent-pulldown">
+          	<option value="">-- parent-name --</option>
+            <option th:each="parent:${parentList}" th:value="${parent.name}" th:text="${parent.name}">- parentCategory -</option>
           </select>
 		  <!-- 中カテゴリ -->        
           <select class="form-control" name="childCategory" id="child-pulldown">
