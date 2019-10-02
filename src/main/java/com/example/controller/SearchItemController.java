@@ -44,7 +44,6 @@ public class SearchItemController {
 	@PostMapping("")
 	public String searchItemsPost(Integer page, SearchItemForm form, Model model) {
 
-		System.out.println("POST");
 		
 		//①ページング機能追加
 		session.setAttribute("searchItemForm", form);
@@ -89,7 +88,6 @@ public class SearchItemController {
 	@GetMapping("")
 	public String searchItemGet(Integer page, Model model) {
 		
-		System.out.println("GET***********************************************");
 		model.addAttribute("indexForm", new SearchItemForm());
 		
 		//表示させたいページ番号を渡し、1ページに表示させる商品リストを取得
