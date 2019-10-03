@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.example.domain.Category;
 import com.example.domain.Item;
@@ -24,6 +25,7 @@ import com.example.service.SearchItemService;
  *
  */
 @Controller
+@SessionAttributes(value = { "searchItemForm" }) 
 @RequestMapping("/search")
 public class SearchItemController {
 	
@@ -43,7 +45,6 @@ public class SearchItemController {
 	 */
 	@PostMapping("")
 	public String searchItemsPost(Integer page, SearchItemForm form, Model model) {
-
 		
 		//①ページング機能追加
 		session.setAttribute("searchItemForm", form);
@@ -79,6 +80,14 @@ public class SearchItemController {
 		//③大カテゴリのリストをスコープに格納
 		List<Category> parentList = pullDownService.findParent();
 		model.addAttribute("parentList", parentList);
+	
+		//TODO ③中カテゴリのリストをスコープに格納(nameが同じで親カテゴリが異なるものの扱いについて再検討すること)
+		List<Category> childList = pullDownService.findChildByParent(form.getParentCategory());
+		model.addAttribute("childList", childList);
+		
+		//TODO ③小カテゴリのリストをスコープに格納(nameが同じで親カテゴリが異なるものの扱いについて再検討すること)
+		List<Category> grandChildList = pullDownService.findGrandChildByChild(form.getParentCategory(), form.getChildCategory());
+		model.addAttribute("grandChildList", grandChildList);
 		
 		
 		//④商品一覧画面出力
@@ -115,6 +124,14 @@ public class SearchItemController {
 		//③大カテゴリのリストをスコープに格納
 		List<Category> parentList = pullDownService.findParent();
 		model.addAttribute("parentList", parentList);
+		
+		//TODO ③中カテゴリのリストをスコープに格納(nameが同じで親カテゴリが異なるものの扱いについて再検討すること)
+		List<Category> childList = pullDownService.findChild();
+		model.addAttribute("childList", childList);
+		
+		//TODO ③小カテゴリのリストをスコープに格納(nameが同じで親カテゴリが異なるものの扱いについて再検討すること)
+		List<Category> grandChildList = pullDownService.findGrandChild();
+		model.addAttribute("grandChildList", grandChildList);
 		
 		
 		//④商品一覧画面出力

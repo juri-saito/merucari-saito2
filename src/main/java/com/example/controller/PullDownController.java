@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.domain.Category;
 import com.example.service.PullDownService;
+import com.example.service.SearchItemService;
 
 /**
  * 商品検索関連機能の処理の制御を行うコントローラ
@@ -23,6 +25,18 @@ public class PullDownController {
 
 	@Autowired
 	private PullDownService pullDownService;
+	
+//	/**
+//	 * 大カテゴリのリスト
+//	 * @return　大カテゴリのリスト
+//	 */
+//	@RequestMapping("/parent")
+//	@ResponseBody
+//	public void showParent(Model model){
+//		//③大カテゴリのリストをスコープに格納
+//		List<Category> parentList = pullDownService.findParent();
+//		model.addAttribute("parentList", parentList);
+//	}
 	
 	/**
 	 * 大カテゴリに入力された値に応じて中カテゴリのリストを変える

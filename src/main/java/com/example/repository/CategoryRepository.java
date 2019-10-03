@@ -53,6 +53,29 @@ public class CategoryRepository {
 		List<Category> parentList = template.query(sql.toString(), CATEGORY_ROW_MAPPER);
 		return parentList;
 	}
+	
+	/**
+	 * TODO 中カテゴリのリストを取得(nameが同じで親カテゴリが異なるものの扱いについて再検討すること)
+	 * @return　中カテゴリのリスト
+	 */
+	public List<Category> findChild(){
+		StringBuilder sql = new StringBuilder();
+		sql.append("SELECT DISTINCT id, name, parent, name_all FROM category WHERE parent IS NOT null AND name_all IS null ORDER BY name;");
+		List<Category> childList = template.query(sql.toString(), CATEGORY_ROW_MAPPER);
+		return childList;
+	}
+	
+	/**
+	 * TODO 小カテゴリのリストを取得(nameが同じで親カテゴリが異なるものの扱いについて再検討すること)
+	 * @return　小カテゴリのリスト
+	 */
+	public List<Category> findGrandChild(){
+		StringBuilder sql = new StringBuilder();
+		sql.append("SELECT DISTINCT id, name, parent, name_all FROM category WHERE name_all IS NOT null ORDER BY name;");
+		List<Category> childList = template.query(sql.toString(), CATEGORY_ROW_MAPPER);
+		return childList;
+	}
+
 	/**
 	 * 大カテゴリに応じて中カテゴリのリストを取得
 	 * @return　中カテゴリのリスト

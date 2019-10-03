@@ -32,7 +32,7 @@ public class ShowItemController {
 	private ItemService itemServise;
 	
 	@Autowired
-	private PullDownService searchItemService;
+	private PullDownService pullDownService;
 	
 	@Autowired
 	private HttpSession session;
@@ -84,9 +84,17 @@ public class ShowItemController {
 		//TODO ②オートコンプリート
 		
 		//③大カテゴリのリストをスコープに格納
-		List<Category> parentList = searchItemService.findParent();
+		List<Category> parentList = pullDownService.findParent();
 		model.addAttribute("parentList", parentList);
 			
+		//TODO ③中カテゴリのリストをスコープに格納(nameが同じで親カテゴリが異なるものの扱いについて再検討すること)
+//		List<Category> childList = pullDownService.findChild();
+//		model.addAttribute("childList", childList);
+		
+		//TODO ③小カテゴリのリストをスコープに格納(nameが同じで親カテゴリが異なるものの扱いについて再検討すること)
+//		List<Category> grandChildList = pullDownService.findGrandChild();
+//		model.addAttribute("grandChildList", grandChildList);
+		
 		//④商品一覧画面出力
 		return "list.html";
 	}

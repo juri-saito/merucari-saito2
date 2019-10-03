@@ -29,7 +29,26 @@ public class PullDownService {
 		List<Category> parentList = categoryRepository.findParent();
 		return parentList;
 	}
+	
+	/**
+	 * TODO プルダウン表示のために中カテゴリのリストを取得(nameが同じで親カテゴリが異なるものの扱いについて再検討すること)
+	 * @return　中カテゴリのリスト
+	 */
+	public List<Category> findChild(){
+		List<Category> parentList = categoryRepository.findChild();
+		return parentList;
+	}
+	
+	/**
+	 * TODO プルダウン表示のために中カテゴリのリストを取得(nameが同じで親カテゴリが異なるものの扱いについて再検討すること)
+	 * @return　中カテゴリのリスト
+	 */
+	public List<Category> findGrandChild(){
+		List<Category> grandChildList = categoryRepository.findGrandChild();
+		return grandChildList;
+	}
 
+	
 	/**
 	 * 大カテゴリに応じて中カテゴリのリストを取得
 	 * @return　中カテゴリのリスト
@@ -40,7 +59,7 @@ public class PullDownService {
 	}
 
 	/**
-	 * プルダウン表示のために小カテゴリのリストを取得
+	 * 大中カテゴリに応じて小カテゴリのリストを取得
 	 * @return　小カテゴリのリスト
 	 */
 	public List<Category> findGrandChildByChild(String parentName, String childName){
