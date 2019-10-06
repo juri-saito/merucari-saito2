@@ -143,6 +143,69 @@ public class SearchItemController {
 		return "list";
 	}
 	
+	/**
+	 * カテゴリリンク押下時、該当商品一覧画面を表示
+	 * @param 出力したいページ番号
+	 * @return 検索条件に該当する商品一覧画面
+	 */
+	@GetMapping("/link")
+	public String searchItemGet(Integer page, Model model,String parentCategory, String childCategory, String grandChildCategory) {
+		
+		SearchItemForm form = (SearchItemForm)session.getAttribute("searchItemForm");
+		form.setSearchName("");
+		form.setParentCategory(parentCategory);
+		form.setChildCategory(childCategory);
+		form.setGrandChildCategory(grandChildCategory);
+		form.setSearchBrand("");
+		
+		//①ページング機能追加
+		session.setAttribute("searchItemForm", form);
+		
+		if(page == null) {
+			//ページ番号の指定が無い場合は1ページ目を表示させる
+			page = 1;
+		}
+		//TODO 検索機能
+		
+		//表示させたいページ番号を渡し、1ページに表示させる商品リストを取得
+		Page<Item> itemPage = searchItemService.findByCategory(page, (SearchItemForm)session.getAttribute("searchItemForm"));
+		
+		model.addAttribute("itemPage", itemPage);
+		
+		//表示させたいページのページ番号をスコープに格納
+				//TODO list.htmlに1ページ目と最終ページのときはprevボタンとnextボタンが消えるようにjquery書く
+				int currentNumber = itemPage.getNumber();
+				model.addAttribute("currentNumber", currentNumber);
+				
+				//表示させたいページの前のページ番号をスコープに格納
+				model.addAttribute("prevPagePath", "/search?page=" + (currentNumber-1));
+				//表示させたいページの次のページ番号をスコープに格納
+				model.addAttribute("nextPagePath", "/search?page=" + (currentNumber+1));
+				
+		
+		//総ページ数をスコープに格納
+		int totalPages = itemPage.getTotalPages();
+		model.addAttribute("totalPages", totalPages);
+
+		//TODO ②オートコンプリート
+		
+		//③大カテゴリのリストをスコープに格納
+		List<Category> parentList = pullDownService.findParent();
+		model.addAttribute("parentList", parentList);
+	
+		//TODO ③中カテゴリのリストをスコープに格納(nameが同じで親カテゴリが異なるものの扱いについて再検討すること)
+		List<Category> childList = pullDownService.findChildByParent(form.getParentCategory());
+		model.addAttribute("childList", childList);
+		
+		//TODO ③小カテゴリのリストをスコープに格納(nameが同じで親カテゴリが異なるものの扱いについて再検討すること)
+		List<Category> grandChildList = pullDownService.findGrandChildByChild(form.getParentCategory(), form.getChildCategory());
+		model.addAttribute("grandChildList", grandChildList);
+		
+		
+		//④商品一覧画面出力
+		return "list";
+	}
+	
 	
 	
 	/**

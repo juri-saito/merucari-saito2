@@ -34,12 +34,16 @@ public class ItemRepository {
 		item.setCondition(rs.getInt("condition"));
 		item.setCategoryId(rs.getInt("category"));
 		item.setCategoryName(rs.getString("name_all"));
+		item.setParentCategory(rs.getString("parent_category"));
+		item.setChildCategory(rs.getString("child_category"));
+		item.setGrandChildCategory(rs.getString("grandchild_category"));
 		item.setBrand(rs.getString("brand"));
 		item.setPrice(rs.getDouble("price"));
 		item.setShipping(rs.getInt("shipping"));
 		item.setDescription(rs.getString("description"));
 		return item;
 	};
+	
 	
 	/**
 	 * 商品情報を全件検索
@@ -72,7 +76,8 @@ public class ItemRepository {
 	 */
 	public List<Item> findAPageItems(int startItemCount){
 		StringBuilder sql = new StringBuilder();
-		sql.append("SELECT i.id, i.name, i.condition, i.category, c.name_all, i.brand, i.price, i.shipping, i.description FROM items i LEFT OUTER JOIN category c ON i.category = c.id ORDER BY i.id LIMIT 30 OFFSET :startItemCount;");
+		sql.append("SELECT i.id, i.name, i.condition, i.category, c.name_all, SPLIT_PART(name_all ,'/', 1) parent_category, SPLIT_PART(name_all ,'/', 2) child_category, SPLIT_PART(name_all ,'/', 3) grandchild_category, i.brand, i.price, i.shipping, i.description ");
+		sql.append("FROM items i LEFT OUTER JOIN category c ON i.category = c.id ORDER BY i.id LIMIT 30 OFFSET :startItemCount;");
 		SqlParameterSource param = new MapSqlParameterSource().addValue("startItemCount", startItemCount);
 		List<Item> itemList = template.query(sql.toString(), param, ITEM_ROW_MAPPER);
 		return itemList;
@@ -87,19 +92,19 @@ public class ItemRepository {
 		StringBuilder sql = new StringBuilder();
 		List<Item> itemList = new ArrayList<Item>();
 		
-		//商品検索フォームが未入力の場合に対応
-		String searchName = form.getSearchName();
-		if(searchName == null) {
-			searchName = "";
+		//中カテゴリが未入力の場合に対応
+		String childName = form.getChildCategory();
+		if(childName == null) {
+			childName = "";
 		}
 		
-		//ブランド検索フォームが未入力の場合に対応
-		String searchBrand = form.getSearchBrand();
-		if(searchBrand == null) {
-			searchBrand = "";
+		//小カテゴリが未入力の場合に対応
+		String grandChildName = form.getGrandChildCategory();
+		if(grandChildName == null) {
+			grandChildName = "";
 		}
 		
-		sql.append("SELECT i.id, i.name, i.condition, i.category, c.name_all, i.brand, i.price, i.shipping, i.description ");
+		sql.append("SELECT i.id, i.name, i.condition, i.category, c.name_all, SPLIT_PART(name_all ,'/', 1) parent_category, SPLIT_PART(name_all ,'/', 2) child_category, SPLIT_PART(name_all ,'/', 3) grandchild_category, i.brand, i.price, i.shipping, i.description ");
 		sql.append("FROM items i "); 
 		sql.append("LEFT OUTER JOIN category c ON i.category = c.id "); 
 		sql.append("WHERE i.name LIKE :searchName "); 
@@ -108,7 +113,12 @@ public class ItemRepository {
 		sql.append("AND SPLIT_PART(name_all ,'/', 3) Like :grandChildName ");  
 		sql.append("AND i.brand LIKE :searchBrand ");  
 		sql.append("ORDER BY i.id LIMIT 30 OFFSET :startItemCount;");
-		SqlParameterSource param = new MapSqlParameterSource().addValue("startItemCount", startItemCount).addValue("searchName",  "%" + searchName + "%").addValue("parentName", "%" + form.getParentCategory() + "%").addValue("childName", "%" + form.getChildCategory() + "%").addValue("grandChildName", "%" + form.getGrandChildCategory() + "%").addValue("searchBrand",  "%" + searchBrand + "%");			
+		SqlParameterSource param = new MapSqlParameterSource().addValue("startItemCount", startItemCount)
+																.addValue("searchName",  "%" + form.getSearchName() + "%")
+																.addValue("parentName", "%" + form.getParentCategory() + "%")
+																.addValue("childName", "%" + childName + "%")
+																.addValue("grandChildName", "%" + grandChildName + "%")
+																.addValue("searchBrand",  "%" + form.getSearchBrand() + "%");			
 		
 		itemList = template.query(sql.toString(), param, ITEM_ROW_MAPPER);
 		

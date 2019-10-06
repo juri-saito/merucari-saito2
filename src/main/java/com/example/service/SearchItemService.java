@@ -25,6 +25,7 @@ public class SearchItemService {
 	@Autowired
 	private ItemRepository itemRepository;
 
+	
 	/**
 	 * 選択されたカテゴリに応じた商品情報ページングして返す
 	 * @param page　表示させたいページ番号
@@ -37,8 +38,10 @@ public class SearchItemService {
 			//どの商品から表示させるかというカウント値（1つのページの先頭の商品）
 			int startItemCount = (page-1) * 30; //1ページに30個の商品を表示する設定
 			
+			
 			//表示させたいページの商品リスト
 			List<Item> list = itemRepository.findByCategory(startItemCount, form);
+			
 			
 			//上記で作成した該当ページに表示させる商品一覧をページングできる形に変換して返す
 			Page<Item> itemPage = new PageImpl<Item>(list, PageRequest.of(page, 30), itemRepository.findAllItemCount());

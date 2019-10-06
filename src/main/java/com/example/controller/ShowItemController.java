@@ -51,10 +51,6 @@ public class ShowItemController {
 		
 		session.setAttribute("searchItemForm", form);
 		
-//		1ページに全商品を表示
-//		List<Item> itemList = itemServise.findAll();
-//		model.addAttribute("itemList", itemList);
-		
 		//①ページング機能追加
 		if(page == null) {
 			//ページ番号の指定が無い場合は1ページ目を表示させる

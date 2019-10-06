@@ -109,11 +109,14 @@
           </tr>
         </thead>
         <tbody> 
-          <!-- <tr th:each="item:${itemList}"> -->
           <tr th:each="item:${itemPage.content}">
             <td class="item-name"><a href="./detail.html"><span th:text="${item.name}">商品名</span></a></td>
             <td class="item-price"><span th:text="${item.price}">価格</span></td>
-            <td class="item-category"><a  class="brandLink" th:text="${item.categoryName}">カテゴリ</a></td>
+            <td class="item-category">
+            	<a  class="brandLink" th:text="${item.parentCategory}" th:href="@{'/search/link?parentCategory=' + ${item.parentCategory}}">大カテゴリ</a>/
+            	<a  class="brandLink" th:text="${item.childCategory}" th:href="@{'/search/link?parentCategory=' + ${item.parentCategory} + '&childCategory=' + ${item.childCategory}}">中カテゴリ</a>/
+            	<a  class="brandLink" th:text="${item.grandChildCategory}" th:href="@{'/search/link?parentCategory=' + ${item.parentCategory} + '&childCategory=' + ${item.childCategory} + '&grandChildCategory=' + ${item.grandChildCategory}}">小カテゴリ</a>
+            </td>
             <td class="item-brand"><a th:href="@{'/search/brand?brand=' + ${item.brand}}"><span th:text="${item.brand}">ブランド</span></a></td>
             <td class="item-condition"><span th:text="${item.condition}">状態</span></td>
           </tr>

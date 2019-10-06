@@ -21,6 +21,15 @@ public class Item {
 	
 	/** カテゴリ名 */
 	private String categoryName;
+	
+	/** カテゴリ名 */
+	private String parentCategory;
+	
+	/** カテゴリ名 */
+	private String childCategory;
+	
+	/** カテゴリ名 */
+	private String grandChildCategory;
 
 	/** ブランド */
 	private String brand;
@@ -34,18 +43,25 @@ public class Item {
 	/** 商品説明 */
 	private String description;
 	
+	
 
 	public Item() {
 	}
+	
+	
 
-	public Item(Integer id, String name, Integer condition, Integer categoryId, String categoryName, String brand,
-			double price, Integer shipping, String description) {
+	public Item(Integer id, String name, Integer condition, Integer categoryId, String categoryName,
+			String parentCategory, String childCategory, String grandChildCategory, String brand, double price,
+			Integer shipping, String description) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.condition = condition;
 		this.categoryId = categoryId;
 		this.categoryName = categoryName;
+		this.parentCategory = parentCategory;
+		this.childCategory = childCategory;
+		this.grandChildCategory = grandChildCategory;
 		this.brand = brand;
 		this.price = price;
 		this.shipping = shipping;
@@ -55,9 +71,12 @@ public class Item {
 	@Override
 	public String toString() {
 		return "Item [id=" + id + ", name=" + name + ", condition=" + condition + ", categoryId=" + categoryId
-				+ ", categoryName=" + categoryName + ", brand=" + brand + ", price=" + price + ", shipping=" + shipping
-				+ ", description=" + description + "]";
+				+ ", categoryName=" + categoryName + ", parentCategory=" + parentCategory + ", childCategory="
+				+ childCategory + ", grandChildCategory=" + grandChildCategory + ", brand=" + brand + ", price=" + price
+				+ ", shipping=" + shipping + ", description=" + description + "]";
 	}
+
+
 
 	public Integer getId() {
 		return id;
@@ -99,6 +118,30 @@ public class Item {
 		this.categoryName = categoryName;
 	}
 
+	public String getParentCategory() {
+		return parentCategory;
+	}
+
+	public void setParentCategory(String parentCategory) {
+		this.parentCategory = parentCategory;
+	}
+
+	public String getChildCategory() {
+		return childCategory;
+	}
+
+	public void setChildCategory(String childCategory) {
+		this.childCategory = childCategory;
+	}
+
+	public String getGrandChildCategory() {
+		return grandChildCategory;
+	}
+
+	public void setGrandChildCategory(String grandChildCategory) {
+		this.grandChildCategory = grandChildCategory;
+	}
+
 	public String getBrand() {
 		return brand;
 	}
@@ -131,6 +174,7 @@ public class Item {
 		this.description = description;
 	}
 	
+
 	
 		
 }
