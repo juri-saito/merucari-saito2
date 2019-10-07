@@ -47,14 +47,15 @@ public class ItemRepository {
 	
 	/**
 	 * 商品情報を全件検索
+	 * ページング機能で使わなくなった
 	 * @return 全商品リスト
 	 */
-	public List<Item> findAll(){
-		StringBuilder sql = new StringBuilder();
-		sql.append("SELECT i.id, i.name, i.condition, i.category, c.name_all, i.brand, i.price, i.shipping, i.description FROM items i LEFT OUTER JOIN category c ON i.category = c.id ORDER BY i.id;");
-		List<Item> itemList = template.query(sql.toString(), ITEM_ROW_MAPPER);
-		return itemList;
-	}
+//	public List<Item> findAll(){
+//		StringBuilder sql = new StringBuilder();
+//		sql.append("SELECT i.id, i.name, i.condition, i.category, c.name_all, i.brand, i.price, i.shipping, i.description FROM items i LEFT OUTER JOIN category c ON i.category = c.id ORDER BY i.id;");
+//		List<Item> itemList = template.query(sql.toString(), ITEM_ROW_MAPPER);
+//		return itemList;
+//	}
 	
 	/**
 	 * 全商品点数を取得
@@ -125,6 +126,21 @@ public class ItemRepository {
 		return itemList;
 	}
 	
+	/**
+	 * 商品IDから商品情報を検索する
+	 * @param 商品ID
+	 * @return
+	 */
+	public Item findById(int id) {
+		StringBuilder sql =new StringBuilder();
+		sql.append("SELECT i.id, i.name, i.condition, i.category, c.name_all, SPLIT_PART(name_all ,'/', 1) parent_category, SPLIT_PART(name_all ,'/', 2) child_category, SPLIT_PART(name_all ,'/', 3) grandchild_category, i.brand, i.price, i.shipping, i.description ");
+		sql.append("FROM items i "); 
+		sql.append("LEFT OUTER JOIN category c ON i.category = c.id "); 
+		sql.append("WHERE i.id = :id "); 
+		SqlParameterSource param = new MapSqlParameterSource().addValue("id", id);
+		Item item = template.queryForObject(sql.toString(), param, ITEM_ROW_MAPPER);
+		return item;
+	}
 
 	
 }

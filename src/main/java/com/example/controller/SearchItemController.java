@@ -73,6 +73,7 @@ public class SearchItemController {
 		
 		//総ページ数をスコープに格納
 		int totalPages = itemPage.getTotalPages();
+		
 		model.addAttribute("totalPages", totalPages);
 
 		//TODO ②オートコンプリート

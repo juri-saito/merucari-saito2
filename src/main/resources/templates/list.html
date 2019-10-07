@@ -17,7 +17,6 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
     integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
   <script th:src="pulldown.js"></script>
-  <script th:src="link.js"></script>
   <title>Rakus Items</title>
 </head>
 <body>
@@ -110,7 +109,7 @@
         </thead>
         <tbody> 
           <tr th:each="item:${itemPage.content}">
-            <td class="item-name"><a href="./detail.html"><span th:text="${item.name}">商品名</span></a></td>
+            <td class="item-name"><a th:href="@{'/detail?id=' + ${item.id}}"><span th:text="${item.name}">商品名</span></a></td>
             <td class="item-price"><span th:text="${item.price}">価格</span></td>
             <td class="item-category">
             	<a  class="brandLink" th:text="${item.parentCategory}" th:href="@{'/search/link?parentCategory=' + ${item.parentCategory}}">大カテゴリ</a>/

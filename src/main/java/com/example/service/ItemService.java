@@ -27,13 +27,13 @@ public class ItemService {
 
 	/**
 	 * 商品情報を全件検索
-	 * ページング機能で使わなくなる予定
+	 * ページング機能で使わなくなった
 	 * @return 全商品リスト
 	 */
-	public List<Item> findAll(){
-		List<Item> itemList = itemRepository.findAll();
-		return itemList;
-	}
+//	public List<Item> findAll(){
+//		List<Item> itemList = itemRepository.findAll();
+//		return itemList;
+//	}
 	
 	/**
 	 * ページング用メソッド
@@ -53,5 +53,10 @@ public class ItemService {
 		Page<Item> itemPage = new PageImpl<Item>(list, PageRequest.of(page, 30), itemRepository.findAllItemCount());
 		
 		return itemPage;
+	}
+	
+	public Item findByID(int id) {
+		Item item  = itemRepository.findById(id);
+		return item;
 	}
 }
